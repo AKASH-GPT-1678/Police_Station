@@ -10,10 +10,12 @@ import { IoMdPeople } from "react-icons/io";
 import { GiCrimeSceneTape } from "react-icons/gi";
 import { CiMoneyBill } from "react-icons/ci";
 import { GrSchedulePlay } from "react-icons/gr";
+import { useRouter } from 'next/navigation';
 
 export const Sidebar = () => {
+    const router = useRouter();
     return (
-        <div className='w-full hidden md:max-w-[400px] md:flex flex-col'>
+        <div className='w-full hidden md:max-w-[400px] lg:flex flex-col'>
 
             <div className='flex flex-row justify-between items-center w-full  sm:max-w-[350px]  md:max-w-[400px]'>
                 <Image src={IkeaLogo} alt='core-logo' className='h-16 w-36 cursor-pointer ' />
@@ -61,7 +63,7 @@ export const Sidebar = () => {
                     <li className='flex flex-row gap-4 p-4 items-center hover:bg-purple-50 hover:border-l-4 cursor-pointer hover:border-purple-600 hover:text-purple-700'> <IoMdPeople size={24} className='hover:text-purple-600' />
                         <p className='text-gray-400 text-xl hover:text-purple-600'>Team</p></li>
                     <li className='flex flex-row gap-4 p-4 items-center hover:bg-purple-50 hover:border-l-4 cursor-pointer hover:border-purple-600 hover:text-purple-700'> <GiCrimeSceneTape size={24} className='hover:text-purple-600' />
-                        <p className='text-gray-400 text-xl hover:text-purple-600'>Crimes and Cases</p></li>
+                        <p className='text-gray-400 text-xl hover:text-purple-600' onClick={() => router.push("/cases")}>Crimes and Cases</p></li>
                     <li className='flex flex-row gap-4 p-4 items-center hover:bg-purple-50 hover:border-l-4 cursor-pointer hover:border-purple-600 hover:text-purple-700'> <CiMoneyBill size={24} className='hover:text-purple-600' />
                         <p className='text-gray-400 text-xl hover:text-purple-600'>Finance</p></li>
                     <li className='flex flex-row gap-4 p-4 items-center hover:bg-purple-50 hover:border-l-4 cursor-pointer hover:border-purple-600 hover:text-purple-700'> <GrSchedulePlay size={24} className='hover:text-purple-600' />
