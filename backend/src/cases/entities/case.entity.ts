@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Evidence } from './evidence.entity';
 @Entity()
 export class Case {
   @PrimaryGeneratedColumn()
@@ -13,6 +13,9 @@ export class Case {
 
   @Column()
   status: string; 
+  
+  @OneToMany(() => Evidence, (evidence) => evidence.case, { cascade: true })
+  evidences: Evidence[];
 
 
 

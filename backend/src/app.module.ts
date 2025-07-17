@@ -6,6 +6,10 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Case } from './cases/entities/case.entity';
+import { ComplaintModule } from './complaint/complaint.module';
+import { PersonnelModule } from './personnel/personnel.module';
+import { KafkaModule } from './kafka/kafka.module';
+
 
 @Module({
   imports: [
@@ -16,7 +20,7 @@ import { Case } from './cases/entities/case.entity';
     
     
     
-    CasesModule, DatabaseModule],
+    CasesModule, DatabaseModule, ComplaintModule, PersonnelModule, KafkaModule],
   controllers: [AppController],
   providers: [AppService],
 })

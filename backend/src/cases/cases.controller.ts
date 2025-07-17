@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CasesService } from './cases.service';
 import { CreateCaseDto } from './entities/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
+import { AddEvidenceDto } from './dto/addEvidence';
 
 @Controller('cases')
 export class CasesController {
@@ -10,6 +11,11 @@ export class CasesController {
  @Post('create')
   async create(@Body() createCaseDto: CreateCaseDto) {
     return await this.casesService.createCase(createCaseDto);
+  }
+
+  @Post('addEvidence')
+  async addEvidence(@Body() addEvidenceDto: AddEvidenceDto) {
+    return await this.casesService.saveEvidence(addEvidenceDto);
   }
 
 
