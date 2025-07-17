@@ -14,14 +14,15 @@ import { KafkaModule } from './kafka/kafka.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal : true
+      isGlobal: true
     }),
 
-    
-    
-    
+
+
+
     CasesModule, DatabaseModule, ComplaintModule, PersonnelModule, KafkaModule],
+  
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

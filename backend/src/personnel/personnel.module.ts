@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { PersonnelService } from './personnel.service';
 import { PersonnelController } from './personnel.controller';
-
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Personnel } from './entities/personnel.entity';
+import { Attendance } from './entities/attendance.entity';
+import { DailyAttendance } from './entities/dailyattendance.entity';
 @Module({
+  imports: [TypeOrmModule.forFeature([Personnel, Attendance, DailyAttendance])],
   controllers: [PersonnelController],
   providers: [PersonnelService],
 })
