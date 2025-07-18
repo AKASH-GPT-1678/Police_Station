@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEnum, IsUUID, IsDateString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum, IsUUID, IsDateString, IsOptional, isNotEmpty, IsNumber } from 'class-validator';
 import { AssetCategory } from '../entities/asset.entity';
 export class CreateAssetDto {
   @IsNotEmpty()
@@ -16,6 +16,11 @@ export class CreateAssetDto {
   @IsNotEmpty()
   @IsString()
   status: string;
+
+
+  @IsNotEmpty()
+  @IsNumber()
+  value: number;
 
   @IsNotEmpty()
   @IsDateString()

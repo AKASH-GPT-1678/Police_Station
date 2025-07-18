@@ -12,6 +12,8 @@ import { KafkaModule } from './kafka/kafka.module';
 import { AssetsModule } from './assets/assets.module';
 import { ReportsModule } from './reports/reports.module';
 import { GeminiModule } from './gemini/gemini.module';
+import { FinanceModule } from './finance/finance.module';
+import { CloudModule } from './cloud/cloud.module';
 
 
 @Module({
@@ -23,7 +25,7 @@ import { GeminiModule } from './gemini/gemini.module';
 
 
 
-    CasesModule, DatabaseModule, ComplaintModule, PersonnelModule, KafkaModule, AssetsModule, ReportsModule, GeminiModule],
+    CasesModule, DatabaseModule, ComplaintModule, PersonnelModule, KafkaModule, AssetsModule, ReportsModule, GeminiModule, FinanceModule, CloudModule],
   
   controllers: [AppController],
   providers: [AppService],

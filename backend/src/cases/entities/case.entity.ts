@@ -18,6 +18,10 @@ export class Case {
   @Column()
   status: string;
 
+
+  @Column()
+  firId : string
+
   @Column("text", { array: true })
   suspects: string[];
 

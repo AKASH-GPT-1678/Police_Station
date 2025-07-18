@@ -30,6 +30,9 @@ export class Asset {
   @Column()
   status: string; 
 
+  @Column()
+  value: number;
+
   @Column({ type: 'date' })
   purchaseDate: string;
 

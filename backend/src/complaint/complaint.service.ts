@@ -55,6 +55,23 @@ export class ComplaintService {
   };
 
 
+  async deleteFir(id: string) {
+    const fir = await this.firRepository.findOne({ where: { id: id } });
+    if (!fir) {
+      throw new Error('FIR not found');
+    }
+    return await this.firRepository.remove(fir);
+  };
+
+
+
+  
+
+
+
+  
+
+
 
 
 

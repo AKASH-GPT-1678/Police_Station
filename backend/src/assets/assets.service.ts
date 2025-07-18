@@ -119,6 +119,16 @@ export class AssetsService {
   };
 
 
+  async updateValue(assetId: string, value: number) {
+    const asset = await this.assetRepository.findOne({ where: { id: assetId } });
+    if (!asset) {
+      throw new AssetNotFoundException();
+    }
+    asset.value = value;
+    return await this.assetRepository.save(asset);
+  };
+
+
 
 
 

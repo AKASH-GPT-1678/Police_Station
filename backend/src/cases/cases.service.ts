@@ -12,6 +12,7 @@ import { CourtHearing } from './entities/court-hearing.entity';
 import { InvestigationActivity } from './entities/investigation.entity';
 import { People, PersonRole } from './entities/people.entity';
 import { AddPersonDto } from './dto/addPersonDto';
+import { FIR } from 'src/complaint/entities/fir.entity';
 
 @Injectable()
 export class CasesService {
@@ -28,16 +29,35 @@ export class CasesService {
 
     @InjectRepository(People)
     private readonly peopleRepo: Repository<People>,
+
+    @InjectRepository(FIR)
+    private readonly firRepo: Repository<FIR>,
   ) { }
 
   async createCase(createCaseDto: CreateCaseDto): Promise<Case> {
+
+    const fir = await this.firRepo.findOne({ where: { id: createCaseDto.firId } });
+
+    if (!fir) {
+      throw new Error('FIR not found');
+    };
+
+    if(createCaseDto.adminSignature != process.env.ADMIN_SIGNATURE) {
+      throw new Error('Unauthorized');
+
+    };
+
     const casee = new Case();
     casee.title = createCaseDto.title;
+    casee.firId = fir.id;
+  
     casee.description = createCaseDto.description;
     casee.status = createCaseDto.status;
 
     return await this.caseRepository.save(casee);  // 🟢 save to DB
-  }
+  };
+
+
 
 
 

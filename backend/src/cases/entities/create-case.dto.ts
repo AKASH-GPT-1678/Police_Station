@@ -5,6 +5,21 @@ export class CreateCaseDto {
   @IsNotEmpty()
   title: string;
 
+
+
+  @IsString()
+  @IsNotEmpty()
+  firId : string;
+
+
+
+  @IsString()
+  @IsNotEmpty()
+  adminSignature: string;
+
+
+
+
   @IsString()
   @IsNotEmpty()
   description: string;

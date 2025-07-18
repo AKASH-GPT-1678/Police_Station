@@ -8,9 +8,10 @@ import { Personnel } from 'src/personnel/entities/personnel.entity';
 import { CourtHearing } from './entities/court-hearing.entity';
 import { InvestigationActivity } from './entities/investigation.entity';
 import { People } from './entities/people.entity';
+import { FIR } from 'src/complaint/entities/fir.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Case, Evidence,Personnel , CourtHearing, InvestigationActivity, People])], //
+  imports: [TypeOrmModule.forFeature([Case, Evidence,Personnel , FIR,CourtHearing, InvestigationActivity, People])], //
   controllers: [CasesController],
   providers: [CasesService],
 })

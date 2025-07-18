@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ComplaintService } from './complaint.service';
 import { CreateFirDto } from './dto/create-complaint.dto';
@@ -19,7 +19,17 @@ export class ComplaintController {
 
 
       return await this.complaintService.registerComplaint(addEvidenceDto);
-    }
+    };
+
+
+
+  @Delete('delete/:id')
+  async deleteFir(@Param('id') id: string) {
+    return await this.complaintService.deleteFir(id);
+  };
+
+  
+
   
 
  

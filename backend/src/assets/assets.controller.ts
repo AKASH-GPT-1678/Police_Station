@@ -48,6 +48,15 @@ export class AssetsController {
     return await this.assetsService.updateStatus(assetId, status);
   }
 
+  // ✅ UPDATE VALUE
+  @Put('value/:assetId')
+  async updateAssetValue(
+    @Param('assetId') assetId: string,
+    @Query('value') value: number
+  ) {
+    return await this.assetsService.updateValue(assetId, value);
+  }
+
 
 
 }
