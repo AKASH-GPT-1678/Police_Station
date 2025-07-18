@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PersonnelService } from './personnel.service';
 import { CreatePersonnelDto } from './dto/create-personnel.dto';
 import { UpdatePersonnelDto } from './dto/update-personnel.dto';
+import { PersonnelRole } from './entities/personnel.entity';
 
 @Controller('personnel')
 export class PersonnelController {
@@ -28,6 +29,12 @@ export class PersonnelController {
   @Post('marktoday/:id')
   async markAttendance(@Param("id") id : string){
     return await this.personnelService.saveDailyAttendance(id);
+  }
+
+
+  @Get("squad/:role")
+  async getPersonnels(@Param("role") role : PersonnelRole) {
+    return await this.personnelService.getPersonnelsBYRole({role});
   }
 
  

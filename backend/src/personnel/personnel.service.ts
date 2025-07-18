@@ -3,20 +3,24 @@ import { CreatePersonnelDto } from './dto/create-personnel.dto';
 import { UpdatePersonnelDto } from './dto/update-personnel.dto';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Personnel } from './entities/personnel.entity';
+import { Personnel, PersonnelRole } from './entities/personnel.entity';
 import { Attendance } from './entities/attendance.entity';
 import { CreateAttendanceDto } from './dto/create-attendance';
 import { generateAttendanceId } from 'utils/attendanceId';
 import { DailyAttendance } from './entities/dailyattendance.entity';
 import { Raw } from 'typeorm';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { AdminSignatureNotFoundException } from 'src/exceptions/not-admin';
+import { getByRoleDto } from './dto/getByrole';
+import { Case } from 'src/cases/entities/case.entity';
 
 @Injectable()
 export class PersonnelService {
   constructor(
     @InjectRepository(Personnel) private personnelRepository: Repository<Personnel>,
     @InjectRepository(Attendance) private attendanceRepository: Repository<Attendance>,
-    @InjectRepository(DailyAttendance) private dailyattendanceRepository: Repository<DailyAttendance>
+    @InjectRepository(DailyAttendance) private dailyattendanceRepository: Repository<DailyAttendance>,
+    @InjectRepository(Case) private caseRepository: Repository<Case>,
   ) { }
 
 
@@ -67,7 +71,7 @@ export class PersonnelService {
       // Ensure 'id' exists in DailyAttendance entity
       id: dailyattendanceId,  // Your function to generate unique ID
       date: new Date(),
-      userId: id ,
+      userId: id,
       month: new Date().toLocaleString('default', { month: 'long' }),
       count: 1,
       status: true,
@@ -99,6 +103,57 @@ export class PersonnelService {
     return data;
 
   }
+
+
+  async deletePersonel(id: string, adminSignature: string) {
+
+    if (adminSignature != process.env.ADMIN_SIGNATURE) {
+      throw new AdminSignatureNotFoundException();
+    };
+
+    const personnel = await this.personnelRepository.findOne({ where: { id: id } });
+    if (!personnel) {
+      throw new NotFoundException("Personnel not found");
+    }
+    return await this.personnelRepository.remove(personnel);
+  };
+
+
+  async getPersonnelsBYRole(roleDto: getByRoleDto) {
+    const personnels = await this.personnelRepository.find({ where: { role: roleDto.role } });
+
+
+    if (!personnels) {
+      throw new NotFoundException("Personnel not found");
+    };
+
+    return personnels;
+  };
+
+
+
+  async getPersonelCases(id: string) {
+
+    const personnel = await this.personnelRepository.findOne({ where: { id: id } });
+    if (!personnel) {
+      throw new NotFoundException("Personnel not found");
+    }
+
+    const cases = await this.caseRepository.find({ where: { assignTo: personnel } })
+    if (!cases) {
+      throw new NotFoundException("Cases not found");
+    }
+    return cases
+  };
+
+
+  ///transfer and promotion management
+
+
+
+
+
+
 
 
 

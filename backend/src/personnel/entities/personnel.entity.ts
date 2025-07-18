@@ -1,5 +1,6 @@
 import { Asset } from 'src/assets/entities/asset.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Case } from 'src/cases/entities/case.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 
 export enum PersonnelRole {
   Constable = 'Constable',
@@ -48,5 +49,9 @@ export class Personnel {
 
 
   @OneToMany(() => Asset, (asset) => asset.personnel)
-  assets: Asset[]
+  assets: Asset[];
+
+
+  @ManyToOne(() => Case, (casee) => casee.assignTo, { onDelete: 'CASCADE' })
+  case: Case;
 }

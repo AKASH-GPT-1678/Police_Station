@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCaseDto } from './entities/create-case.dto';
 import { UpdateCaseDto } from './dto/update-case.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,16 +6,30 @@ import { Case } from './entities/case.entity';
 import { In, Repository } from 'typeorm';
 import { Evidence } from './entities/evidence.entity';
 import { AddEvidenceDto } from './dto/addEvidence';
+import { AssignCaseDto } from './dto/assignCaseDto';
+import { Personnel } from 'src/personnel/entities/personnel.entity';
+import { CourtHearing } from './entities/court-hearing.entity';
+import { InvestigationActivity } from './entities/investigation.entity';
+import { People, PersonRole } from './entities/people.entity';
 
 @Injectable()
 export class CasesService {
 
-constructor(
-  @InjectRepository(Case) private caseRepository: Repository<Case>,
-  @InjectRepository(Evidence) private evidenceRepository: Repository<Evidence>,
-) {}
+  constructor(
+    @InjectRepository(Case) private caseRepository: Repository<Case>,
+    @InjectRepository(Evidence) private evidenceRepository: Repository<Evidence>,
+    @InjectRepository(Personnel) private personnelRepository: Repository<Personnel>,
+    @InjectRepository(CourtHearing)
+    private readonly hearingRepo: Repository<CourtHearing>,
 
- async createCase(createCaseDto: CreateCaseDto ): Promise<Case> {
+    @InjectRepository(InvestigationActivity)
+    private readonly activityRepo: Repository<InvestigationActivity>,
+
+    @InjectRepository(People)
+    private readonly peopleRepo: Repository<People>,
+  ) { }
+
+  async createCase(createCaseDto: CreateCaseDto): Promise<Case> {
     const casee = new Case();
     casee.title = createCaseDto.title;
     casee.description = createCaseDto.description;
@@ -26,14 +40,12 @@ constructor(
 
 
 
-  async saveEvidence(addEvidenceDto : AddEvidenceDto){
-    const cases  = await this.caseRepository.findOne({where : {id : addEvidenceDto.caseId}});
+  async saveEvidence(addEvidenceDto: AddEvidenceDto) {
+    const cases = await this.caseRepository.findOne({ where: { id: addEvidenceDto.caseId } });
 
-    if(!cases){
+    if (!cases) {
       throw new Error('Case not found');
     }
- 
-
 
     const evidence = new Evidence();
     evidence.type = addEvidenceDto.type;
@@ -41,7 +53,99 @@ constructor(
     evidence.url = addEvidenceDto.imgUrl;
     evidence.case = cases;
     await this.evidenceRepository.save(evidence);
+  };
+
+
+
+  async assignCases(cases: AssignCaseDto) {
+
+    const casee = await this.caseRepository.findOne({ where: { id: cases.caseId } });
+
+    if (!casee) {
+      throw new Error('Case not found');
+    }
+
+    const personnel = await this.personnelRepository.findOne({ where: { id: cases.personnelId } });
+
+    if (!personnel) {
+      throw new Error('Personnel not found');
+    };
+
+    casee.assignTo.push(personnel);
+    await this.caseRepository.save(casee);
+
+  };
+  
+  async addCourtHearing(caseId: number, data: {
+    courtName: string;
+    date: string;
+    judgeName: string;
+    summary: string;
+  }) {
+    const caseEntity = await this.getCaseOrFail(caseId);
+
+    const hearing = this.hearingRepo.create({
+      ...data,
+      case: caseEntity
+    });
+
+    return await this.hearingRepo.save(hearing);
   }
+
+  // --------------------------
+  // 🔍 INVESTIGATION ACTIVITY METHODS
+  // --------------------------
+
+  async addInvestigationActivity(caseId: number, data: {
+    actionTitle: string;
+    description: string;
+  }) {
+    const caseEntity = await this.getCaseOrFail(caseId);
+
+    const activity = this.activityRepo.create({
+      ...data,
+      case: caseEntity
+    });
+
+    return await this.activityRepo.save(activity);
+  }
+
+  // --------------------------
+  // 👤 PEOPLE METHODS (SUSPECT / WITNESS / VICTIM)
+  // --------------------------
+
+  async addPersonToCase(caseId: number, data: {
+    name: string;
+    aadharNumber: string;
+    contactNumber: string;
+    address?: string;
+    role: PersonRole; // 'suspect' | 'witness' | 'victim'
+  }) {
+    const caseEntity = await this.getCaseOrFail(caseId);
+
+    const person = this.peopleRepo.create({
+      ...data,
+      case: caseEntity
+    });
+
+    return await this.peopleRepo.save(person);
+  }
+
+  async removePersonFromCase(personId: string) {
+    const person = await this.peopleRepo.findOne({ where: { id: personId } });
+    if (!person) throw new NotFoundException('Person not found');
+
+    return await this.peopleRepo.remove(person);
+  };
+
+    private async getCaseOrFail(caseId: number): Promise<Case> {
+    const found = await this.caseRepository.findOne({ where: { id: caseId } });
+    if (!found) throw new NotFoundException('Case not found');
+    return found;
+  }
+
+
+
 
 
 
