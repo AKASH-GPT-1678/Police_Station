@@ -28,7 +28,7 @@ export class Asset {
   serialNumber: string;
 
   @Column()
-  status: string; // Example: Active, Under Repair, Retired
+  status: string; 
 
   @Column({ type: 'date' })
   purchaseDate: string;
@@ -38,4 +38,4 @@ export class Asset {
 
   @ManyToOne(() => Personnel, (personnel) => personnel.assets, { nullable: true })
   personnel: Personnel;
-}
+};

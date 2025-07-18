@@ -6,8 +6,9 @@ import { Personnel } from './entities/personnel.entity';
 import { Attendance } from './entities/attendance.entity';
 import { DailyAttendance } from './entities/dailyattendance.entity';
 import { Case } from 'src/cases/entities/case.entity';
+import { PersonnelBackUp } from './entities/personal-backup.entity';
 @Module({
-  imports: [TypeOrmModule.forFeature([Personnel, Attendance, DailyAttendance, Case])],
+  imports: [TypeOrmModule.forFeature([Personnel, Attendance, DailyAttendance, Case, PersonnelBackUp])],
   controllers: [PersonnelController],
   providers: [PersonnelService],
 })

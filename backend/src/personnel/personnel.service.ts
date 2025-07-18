@@ -13,6 +13,7 @@ import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { AdminSignatureNotFoundException } from 'src/exceptions/not-admin';
 import { getByRoleDto } from './dto/getByrole';
 import { Case } from 'src/cases/entities/case.entity';
+import { PersonnelBackUp } from './entities/personal-backup.entity';
 
 @Injectable()
 export class PersonnelService {
@@ -21,6 +22,7 @@ export class PersonnelService {
     @InjectRepository(Attendance) private attendanceRepository: Repository<Attendance>,
     @InjectRepository(DailyAttendance) private dailyattendanceRepository: Repository<DailyAttendance>,
     @InjectRepository(Case) private caseRepository: Repository<Case>,
+    @InjectRepository(PersonnelBackUp) private personnelBackUpRepository: Repository<PersonnelBackUp>,
   ) { }
 
 
@@ -105,7 +107,7 @@ export class PersonnelService {
   }
 
 
-  async deletePersonel(id: string, adminSignature: string) {
+  async deletePersonel(id: string, adminSignature: string, needBackUp: boolean) {
 
     if (adminSignature != process.env.ADMIN_SIGNATURE) {
       throw new AdminSignatureNotFoundException();
@@ -114,6 +116,10 @@ export class PersonnelService {
     const personnel = await this.personnelRepository.findOne({ where: { id: id } });
     if (!personnel) {
       throw new NotFoundException("Personnel not found");
+    };
+
+    if (needBackUp) {
+      await this.personnelBackUpRepository.save(personnel);
     }
     return await this.personnelRepository.remove(personnel);
   };
@@ -147,7 +153,22 @@ export class PersonnelService {
   };
 
 
-  ///transfer and promotion management
+  async caseAgainsPersonnel(id: string, caseId: number) {
+
+    const personnel = await this.personnelRepository.findOne({ where: { id: id } });
+    if (!personnel) {
+      throw new NotFoundException("Personnel not found");
+    }
+
+    personnel.casesAgainst.push(caseId.toString());
+    await this.personnelRepository.save(personnel);
+  };
+
+
+
+
+
+
 
 
 

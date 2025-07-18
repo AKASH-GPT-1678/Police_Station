@@ -37,6 +37,17 @@ export class AssetsService {
   async createAsset(createAssetDto: CreateAssetDto) {
     const asset = this.assetRepository.create(createAssetDto);
     return await this.assetRepository.save(asset);
+  };
+
+
+
+  async deleteAsset(id: string) {
+
+    const asset = await this.assetRepository.findOne({ where: { id: id } });
+    if (!asset) {
+      throw new AssetNotFoundException();
+    }
+    return await this.assetRepository.remove(asset);
   }
 
 
@@ -47,6 +58,8 @@ export class AssetsService {
 
 
     };
+
+
 
 
 
@@ -73,19 +86,43 @@ export class AssetsService {
 
     const saveAsset = await this.assetRepository.save({ ...asset, personnel: newPersonnel, status: 'assigned' });
 
-    if(asset.status != 'newPurchase'){
-      await this.assetHistoryRepository.create({movedFrom : "newPurchase" , movedTo : newPersonnel.name, assetId : saveAsset.id , createdAt : new Date() })
+    if (asset.status != 'newPurchase') {
+      await this.assetHistoryRepository.create({  movedFrom: "newPurchase", movedTo: newPersonnel.name, assetId: saveAsset.id, createdAt: new Date() })
     }
     else {
-      await this.assetHistoryRepository.create({movedFrom : asset.personnel.name , movedTo : newPersonnel.id , assetId : saveAsset.id , createdAt : new Date() } )
+      await this.assetHistoryRepository.create({   movedFrom: asset.personnel.id, movedTo: newPersonnel.id, assetId: saveAsset.id, createdAt: new Date() })
     }
 
 
-   
+
 
   };
 
 
+  async getCompleteAssetHistory(assetId: string) {
+    const asset = await this.assetRepository.findOne({ where: { id: assetId } });
+    if (!asset) {
+      throw new AssetNotFoundException();
+    }
+    const history = await this.assetHistoryRepository.find({ where: { assetId: assetId } });
+    return history;
+  };
 
-  
+
+  async updateStatus(assetId: string, status: string) {
+    const asset = await this.assetRepository.findOne({ where: { id: assetId } });
+    if (!asset) {
+      throw new AssetNotFoundException();
+    }
+    asset.status = status;
+    return await this.assetRepository.save(asset);
+  };
+
+
+
+
+
+
+
+
 }

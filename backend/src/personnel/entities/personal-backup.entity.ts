@@ -13,7 +13,7 @@ export enum PersonnelRole {
 }
 
 @Entity()
-export class Personnel {
+export class PersonnelBackUp {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -54,15 +54,5 @@ export class Personnel {
 
   @ManyToOne(() => Case, (casee) => casee.assignTo, { onDelete: 'CASCADE' })
   case: Case;
-
-
-  @Column("text", { array: true })
-  casesAgainst: string[];
-
-
-
-
-
-
 };
 

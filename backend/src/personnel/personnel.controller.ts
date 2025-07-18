@@ -35,7 +35,8 @@ export class PersonnelController {
   @Get("squad/:role")
   async getPersonnels(@Param("role") role : PersonnelRole) {
     return await this.personnelService.getPersonnelsBYRole({role});
-  }
+  };
+  
 
  
 }

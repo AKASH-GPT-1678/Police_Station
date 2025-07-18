@@ -11,6 +11,7 @@ import { Personnel } from 'src/personnel/entities/personnel.entity';
 import { CourtHearing } from './entities/court-hearing.entity';
 import { InvestigationActivity } from './entities/investigation.entity';
 import { People, PersonRole } from './entities/people.entity';
+import { AddPersonDto } from './dto/addPersonDto';
 
 @Injectable()
 export class CasesService {
@@ -75,7 +76,7 @@ export class CasesService {
     await this.caseRepository.save(casee);
 
   };
-  
+
   async addCourtHearing(caseId: number, data: {
     courtName: string;
     date: string;
@@ -114,14 +115,8 @@ export class CasesService {
   // 👤 PEOPLE METHODS (SUSPECT / WITNESS / VICTIM)
   // --------------------------
 
-  async addPersonToCase(caseId: number, data: {
-    name: string;
-    aadharNumber: string;
-    contactNumber: string;
-    address?: string;
-    role: PersonRole; // 'suspect' | 'witness' | 'victim'
-  }) {
-    const caseEntity = await this.getCaseOrFail(caseId);
+  async addPersonToCase(data: AddPersonDto) {
+    const caseEntity = await this.getCaseOrFail(data.caseId);
 
     const person = this.peopleRepo.create({
       ...data,
@@ -138,10 +133,25 @@ export class CasesService {
     return await this.peopleRepo.remove(person);
   };
 
-    private async getCaseOrFail(caseId: number): Promise<Case> {
+  private async getCaseOrFail(caseId: number): Promise<Case> {
     const found = await this.caseRepository.findOne({ where: { id: caseId } });
     if (!found) throw new NotFoundException('Case not found');
     return found;
+  };
+
+  async getFullCaseById(caseId: number) {
+    const caseDetails = await this.caseRepository.findOne({
+      where: { id: caseId },
+      relations: ['assignTo', 'hearings', 'activities', 'evidence', 'people'],
+    });
+
+    if (!caseDetails) throw new NotFoundException('Case not found');
+    return caseDetails;
+  };
+  async updateCaseStatus(caseId: number, newStatus: string) {
+    const caseEntity = await this.getCaseOrFail(caseId);
+    caseEntity.status = newStatus;
+    return await this.caseRepository.save(caseEntity);
   }
 
 
