@@ -9,6 +9,9 @@ import { Case } from './cases/entities/case.entity';
 import { ComplaintModule } from './complaint/complaint.module';
 import { PersonnelModule } from './personnel/personnel.module';
 import { KafkaModule } from './kafka/kafka.module';
+import { AssetsModule } from './assets/assets.module';
+import { ReportsModule } from './reports/reports.module';
+import { GeminiModule } from './gemini/gemini.module';
 
 
 @Module({
@@ -20,7 +23,7 @@ import { KafkaModule } from './kafka/kafka.module';
 
 
 
-    CasesModule, DatabaseModule, ComplaintModule, PersonnelModule, KafkaModule],
+    CasesModule, DatabaseModule, ComplaintModule, PersonnelModule, KafkaModule, AssetsModule, ReportsModule, GeminiModule],
   
   controllers: [AppController],
   providers: [AppService],

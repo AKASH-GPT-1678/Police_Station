@@ -13,7 +13,7 @@ export class FIR {
   policeStation: string;
 
   @Column()
-  dateOfFiling: string;
+  dateOfFiling: Date;
 
   // Complainant details
   @Column()

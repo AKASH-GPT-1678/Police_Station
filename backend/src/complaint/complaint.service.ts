@@ -25,7 +25,7 @@ export class ComplaintService {
     fir.incident = incident;
     fir.firNo = createFirDto.firNo;
     fir.policeStation = createFirDto.policeStation;
-    fir.dateOfFiling = createFirDto.dateOfFiling;
+    fir.dateOfFiling = new Date();
     fir.complainantName = createFirDto.complainantName;
     fir.complainantAge = createFirDto.complainantAge;
     fir.complainantGender = createFirDto.complainantGender;

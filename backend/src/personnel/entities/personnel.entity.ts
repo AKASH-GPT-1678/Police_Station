@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Asset } from 'src/assets/entities/asset.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 export enum PersonnelRole {
   Constable = 'Constable',
@@ -44,4 +45,8 @@ export class Personnel {
 
   @Column()
   station: string;
+
+
+  @OneToMany(() => Asset, (asset) => asset.personnel)
+  assets: Asset[]
 }
